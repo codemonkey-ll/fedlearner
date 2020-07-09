@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: fedlearner/fedlearner-operator
-  tag: "e5f2a54"
+  tag: "eebe5f2"
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
