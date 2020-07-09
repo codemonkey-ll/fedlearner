@@ -14,15 +14,6 @@ import Empty from '../../components/Empty';
 import { deleteJob, createJob } from '../../services/job';
 import Form from '../../components/Form';
 
-const fields = [
-  { key: 'name', required: true },
-  { key: 'job_type', type: 'jobType', required: true },
-  { key: 'client_ticket_name', type: 'clientTicket', label: 'client_ticket', required: true },
-  { key: 'server_ticket_name', type: 'serverTicket', label: 'server_ticket', required: true },
-  { key: 'client_params', type: 'json', span: 24 },
-  { key: 'server_params', type: 'json', span: 24 },
-];
-
 function useStyles(theme) {
   return css`
     .counts-wrap {
@@ -91,6 +82,32 @@ function JobList(props) {
 
   const { data, mutate } = useSWR('jobs', fetcher);
   const jobs = data ? data.data : null;
+  const [federationId, setFederationId] = useState(null);
+  const fields = [
+    { key: 'name', required: true },
+    { key: 'job_type', type: 'jobType', required: true },
+    { key: 'client_ticket_name', type: 'clientTicket', label: 'client_ticket', required: true },
+    {
+      key: 'federation_id',
+      type: 'federation',
+      label: 'federation',
+      required: true,
+      span: 12,
+      onChange: value => setFederationId(value),
+    },
+    {
+      key: 'server_ticket_name',
+      type: 'serverTicket',
+      label: 'server_ticket',
+      required: true,
+      span: 12,
+      props: {
+        federation_id: federationId,
+      },
+    },
+    { key: 'client_params', type: 'json', span: 24 },
+    { key: 'server_params', type: 'json', span: 24 },
+  ];
 
   const labeledList = useMemo(() => {
     const allList = { name: 'All', list: jobs || [] };

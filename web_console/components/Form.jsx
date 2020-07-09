@@ -49,7 +49,7 @@ export default function Form({
     };
     setForm(data);
   };
-  const renderField = ({ key, label, props, type }) => {
+  const renderField = ({ key, label, props, type, onChange }) => {
     const valueProps = {
       ...props,
       style: {
@@ -104,7 +104,12 @@ export default function Form({
           <div className="formItemValue">
             <FederationSelect
               value={form[key]}
-              onChange={(value) => updateForm(key, value)}
+              onChange={(value) => {
+                updateForm(key, value);
+                if (onChange) {
+                  onChange(value);
+                }
+              }}
               {...valueProps}
             />
           </div>
