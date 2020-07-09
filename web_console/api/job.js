@@ -97,18 +97,24 @@ router.get('/api/v1/job/pod/:pod_name/logs', SessionMiddleware, async (ctx) => {
 });
 
 router.post('/api/v1/job', SessionMiddleware, async (ctx) => {
-  const { name, job_type, client_ticket_name, server_ticket_name } = ctx.request.body;
+  const {
+    name, job_type, client_ticket_name, server_ticket_name,
+    client_params, server_params,
+  } = ctx.request.body;
 
-  const [client_params_pass, client_params] = checkParseJson(ctx.request.body.client_params);
-  if (!client_params_pass) {
+  try {
+    JSON.stringify(client_params);
+  } catch (err) {
     ctx.status = 400;
     ctx.body = {
       error: 'client_params must be json',
     };
     return;
   }
-  const [server_params_pass, server_params] = checkParseJson(ctx.request.body.server_params);
-  if (!server_params_pass) {
+
+  try {
+    JSON.stringify(server_params);
+  } catch (err) {
     ctx.status = 400;
     ctx.body = {
       error: 'server_params must be json',
@@ -167,7 +173,11 @@ router.post('/api/v1/job', SessionMiddleware, async (ctx) => {
   }
   const rpcClient = new FederationClient(clientFed);
   try {
-    await rpcClient.createJob(job);
+    await rpcClient.createJob({
+      ...job,
+      client_params: JSON.stringify(client_params),
+      server_params: JSON.stringify(server_params),
+    });
   } catch (err) {
     ctx.status = 500;
     ctx.body = {

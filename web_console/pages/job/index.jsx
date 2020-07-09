@@ -147,6 +147,14 @@ function JobList(props) {
     mutate();
     toggleForm();
   };
+  const onCreateJob = (form) => {
+    const params = {
+      ...form,
+      client_params: JSON.parse(form.client_params),
+      server_params: JSON.parse(form.server_params),
+    };
+    return createJob(params);
+  };
 
   return (
     <div className="page-tasks">
@@ -156,7 +164,7 @@ function JobList(props) {
             <Form
               title="Create Job"
               fields={fields}
-              onSubmit={createJob}
+              onSubmit={onCreateJob}
               onOk={onOk}
               onCancel={toggleForm}
             />
